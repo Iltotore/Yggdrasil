@@ -1,21 +1,21 @@
 package net.akami.yggdrasil.player;
 
-import net.akami.yggdrasil.SchematicRegistry;
 import net.akami.yggdrasil.api.item.InteractiveItem;
 import net.akami.yggdrasil.api.life.LifeComponent;
 import net.akami.yggdrasil.api.mana.ManaContainer;
 import net.akami.yggdrasil.api.player.AbstractYggdrasilPlayer;
 import net.akami.yggdrasil.api.spell.ElementType;
 import net.akami.yggdrasil.api.spell.SpellCaster;
+import net.akami.yggdrasil.api.utils.ItemUtils;
 import net.akami.yggdrasil.item.*;
 import net.akami.yggdrasil.life.PlayerLifeComponent;
 import net.akami.yggdrasil.mana.PlayerManaContainer;
-import net.akami.yggdrasil.spell.EarthTowerCaster;
+import net.akami.yggdrasil.spell.CounterVelocityCaster;
 import net.akami.yggdrasil.spell.FireballCaster;
+import net.akami.yggdrasil.spell.IncendiaCaster;
+import net.akami.yggdrasil.spell.PhoenixArrowCaster;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.Slot;
 
 import java.util.*;
 
@@ -60,53 +60,19 @@ public class YggdrasilPlayer implements AbstractYggdrasilPlayer {
 
     private void fill(Player target) {
         target.getInventory().clear();
-        Iterator<Slot> slots = target.getInventory().<Slot>slots().iterator();
-        for(InteractiveItem interactiveItem : items) {
-            ItemStack item = interactiveItem.matchingItem();
-            Optional<Slot> freeSlot = findSlot(slots, item);
-            freeSlot.ifPresent((slot) -> slot.set(item));
+        for(InteractiveItem item : items) {
+            ItemUtils.fitItemInInventory(target, item);
         }
     }
 
-    private Optional<Slot> findSlot(Iterator<Slot> slots, ItemStack item) {
-        while (slots.hasNext()) {
-            Slot current = slots.next();
-            if (current.canFit(item)) {
-                return Optional.of(current);
-            }
-        }
-        return Optional.empty();
-    }
-
-    // TODO : Don't hardcode values
     @Override
     public void addDefaultSpells() {
-
-        spells.add(new FireballCaster(this));
-        spells.add(new EarthTowerCaster(this, SchematicRegistry.get("earthTower")));
-        /*spells.add(new SpellCaster.Builder()
-                .withGenerator(WindOfFireSpell::new)
-                .withManaUsage(YggdrasilMath.instantStandardPolynomialFunction(120))
-                .withSequence(
-                        ElementType.FIRE, ElementType.FIRE, ElementType.FIRE,
-                        ElementType.EARTH,
-                        ElementType.AIR,
-                        ElementType.EARTH)
-                .build());
-        spells.add(new SpellCaster.Builder()
-                .withGenerator(EarthTowerSpell::new)
-                .withManaUsage(YggdrasilMath.instantStandardPolynomialFunction(40))
-                .withSequence(
-                        ElementType.EARTH, ElementType.EARTH, ElementType.EARTH,
-                        ElementType.AIR)
-                .build());
-        spells.add(new SpellCaster.Builder()
-                .withGenerator(GravitySpell::new)
-                .withManaUsage(YggdrasilMath.instantStandardPolynomialFunction(80))
-                .withSequence(
-                        ElementType.EARTH, ElementType.EARTH,
-                        ElementType.AIR, ElementType.AIR)
-                .build());*/
+        spells.addAll(Arrays.asList(
+                new FireballCaster(this),
+                new PhoenixArrowCaster(),
+                new IncendiaCaster(),
+                new CounterVelocityCaster(this)
+        ));
     }
 
     @Override

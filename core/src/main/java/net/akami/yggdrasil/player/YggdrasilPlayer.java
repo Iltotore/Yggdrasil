@@ -1,5 +1,6 @@
 package net.akami.yggdrasil.player;
 
+import net.akami.yggdrasil.SchematicRegistry;
 import net.akami.yggdrasil.api.item.InteractiveItem;
 import net.akami.yggdrasil.api.life.LifeComponent;
 import net.akami.yggdrasil.api.mana.ManaContainer;
@@ -9,6 +10,7 @@ import net.akami.yggdrasil.api.spell.SpellCaster;
 import net.akami.yggdrasil.item.*;
 import net.akami.yggdrasil.life.PlayerLifeComponent;
 import net.akami.yggdrasil.mana.PlayerManaContainer;
+import net.akami.yggdrasil.spell.EarthTowerCaster;
 import net.akami.yggdrasil.spell.FireballCaster;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
@@ -81,6 +83,7 @@ public class YggdrasilPlayer implements AbstractYggdrasilPlayer {
     public void addDefaultSpells() {
 
         spells.add(new FireballCaster(this));
+        spells.add(new EarthTowerCaster(this, SchematicRegistry.get("earthTower")));
         /*spells.add(new SpellCaster.Builder()
                 .withGenerator(WindOfFireSpell::new)
                 .withManaUsage(YggdrasilMath.instantStandardPolynomialFunction(120))

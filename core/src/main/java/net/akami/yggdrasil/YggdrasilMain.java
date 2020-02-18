@@ -22,7 +22,10 @@ import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 @Plugin(id = "yggdrasil", name = "Yggdrasil", version = "alpha", description = "Core plugin for Yggdrasil")
 public class YggdrasilMain {
@@ -49,6 +52,7 @@ public class YggdrasilMain {
                 new DamageEventListener(players));
 
         registerCommand(Sponge.getCommandManager(), new RebirthCommand(playerManager), "rebirth");
+        registerLocalSchematic("earthTower");
     }
 
     private void registerListeners(EventManager manager, Object... listeners) {
@@ -64,6 +68,20 @@ public class YggdrasilMain {
                 .executor(executor)
                 .build(), aliases);
 
+    }
+
+    private void registerLocalSchematic(String name) {
+        try {
+            InputStream stream = YggdrasilMain.class.getResourceAsStream("/schematics/" + name + ".schematic");
+            if(stream == null) {
+                logger.warn("Structure not found: " + name);
+                return;
+            }
+            SchematicRegistry.register(name, new GZIPInputStream(stream));
+        } catch(IOException e) {
+            e.printStackTrace();
+            logger.warn("Failed to load structure " + name);
+        }
     }
 
     @Listener

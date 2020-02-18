@@ -1,0 +1,39 @@
+package net.akami.yggdrasil.spell;
+
+import net.akami.yggdrasil.api.item.InteractiveItemHandler;
+import net.akami.yggdrasil.api.spell.AbstractSpellCaster;
+import net.akami.yggdrasil.api.spell.ElementType;
+import net.akami.yggdrasil.api.spell.Spell;
+import net.akami.yggdrasil.api.utils.YggdrasilMath;
+import org.spongepowered.api.world.schematic.Schematic;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
+
+public class EarthTowerCaster extends AbstractSpellCaster {
+
+    private InteractiveItemHandler handler;
+    private Schematic towerSchematic;
+
+    public EarthTowerCaster(InteractiveItemHandler handler, Schematic towerSchematic) {
+        this.handler = handler;
+        this.towerSchematic = towerSchematic;
+    }
+
+    @Override
+    protected Supplier<Spell> loadGenerator() {
+        return () -> new EarthTowerSpell(towerSchematic);
+    }
+
+    @Override
+    protected List<ElementType> loadSequence() {
+        return Arrays.asList(ElementType.EARTH, ElementType.WATER);
+    }
+
+    @Override
+    protected BiFunction<Float, Integer, Float> loadManaUsage() {
+        return YggdrasilMath.instantStandardPolynomialFunction(15);
+    }
+}

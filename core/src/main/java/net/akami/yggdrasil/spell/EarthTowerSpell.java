@@ -1,35 +1,30 @@
 package net.akami.yggdrasil.spell;
 
+import net.akami.yggdrasil.api.item.InteractiveItemHandler;
 import net.akami.yggdrasil.api.spell.Spell;
-import net.akami.yggdrasil.api.spell.SpellLauncher;
 import net.akami.yggdrasil.api.spell.SpellTier;
-import org.spongepowered.api.world.schematic.Schematic;
+import net.akami.yggdrasil.api.spell.StorableSpellTier;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class EarthTowerSpell implements Spell {
+public class EarthTowerSpell implements Spell<EarthTowerLauncher> {
 
-    private Schematic towerSchematic;
+    private InteractiveItemHandler handler;
 
-    public EarthTowerSpell(Schematic towerSchematic) {
-        this.towerSchematic = towerSchematic;
-    }
-
-    private List<SpellTier> loadTiers() {
-        return Arrays.asList();
+    public EarthTowerSpell(InteractiveItemHandler handler) {
+        this.handler = handler;
     }
 
     @Override
-    public List<SpellTier> getTiers() {
-        SpellTier tier = (caster, data) -> {
-
-        };
-        return Arrays.asList(tier, tier, tier, tier, tier, tier, tier);
+    public List<SpellTier<EarthTowerLauncher>> getTiers() {
+        return Arrays.asList(new SpellTimeTier<>(100), new SpellRadiusTier<>(1), new SpellSpeedTier<>(1), new StorableSpellTier<>(ItemStack.of(ItemTypes.GRASS), handler, 3), new EarthTowerSizeTier(20), new SpellRadiusTier<>(2));
     }
 
     @Override
-    public SpellLauncher getLauncher() {
-        return new EarthTowerLauncher(towerSchematic);
+    public EarthTowerLauncher getLauncher() {
+        return new EarthTowerLauncher();
     }
 }

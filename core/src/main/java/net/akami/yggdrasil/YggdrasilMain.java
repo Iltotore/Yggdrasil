@@ -52,7 +52,6 @@ public class YggdrasilMain {
                 new DamageEventListener(players));
 
         registerCommand(Sponge.getCommandManager(), new RebirthCommand(playerManager), "rebirth");
-        registerLocalSchematic("earthTower");
     }
 
     private void registerListeners(EventManager manager, Object... listeners) {

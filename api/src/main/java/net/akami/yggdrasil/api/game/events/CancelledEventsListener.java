@@ -1,7 +1,6 @@
 package net.akami.yggdrasil.api.game.events;
 
 import net.akami.yggdrasil.api.player.AbstractYggdrasilPlayerManager;
-import net.akami.yggdrasil.api.utils.YggdrasilKeys;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityTypes;
@@ -56,7 +55,6 @@ public class CancelledEventsListener {
         event
                 .filterEntities(entity -> entity.getType() != EntityTypes.EXPERIENCE_ORB)
                 .forEach(Entity::remove);
-
     }
 
     @Listener(order = Order.LAST)
@@ -66,9 +64,9 @@ public class CancelledEventsListener {
 
     @Listener(order = Order.LAST)
     public void onItemSpawned(SpawnEntityEvent event) {
-        event.getEntities().stream()
+        /*event.getEntities().stream()
                 .filter(entity -> entity.getType() == EntityTypes.ITEM && !entity.get(YggdrasilKeys.PERSISTENT).orElse(false))
-                .forEach(Entity::remove);
+        .forEach(Entity::remove);*/
     }
     // TODO : add hit, craft, use anvils, enchantment tables
 }

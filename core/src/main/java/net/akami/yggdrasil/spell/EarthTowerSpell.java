@@ -20,7 +20,7 @@ public class EarthTowerSpell implements Spell<EarthTowerLauncher> {
 
     @Override
     public List<SpellTier<EarthTowerLauncher>> getTiers() {
-        return Arrays.asList(new SpellTimeTier<>(100), new SpellRadiusTier<>(1), new SpellSpeedTier<>(1), new StorableSpellTier<>(ItemStack.of(ItemTypes.GRASS), handler, 3), new EarthTowerSizeTier(20), new SpellRadiusTier<>(2));
+        return Arrays.asList(new SpellTimeTier<>(100), new SpellRadiusTier<>(1), new SpellSpeedTier<>(1), new StorableSpellTier<>(ItemStack.of(ItemTypes.GRASS), handler, 3), new EarthTowerSizeTier(20), new SpellRadiusTier<>(2), new SpellTimeTier<>(200));
     }
 
     @Override

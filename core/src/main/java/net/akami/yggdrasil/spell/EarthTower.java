@@ -6,13 +6,16 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Random;
 
 public class EarthTower {
 
     private Player owner;
     private Location<World> location;
-    private Map<Vector3i, BlockState> oldStates = new HashMap<>();
+    private List<BlockInfo> infos = new ArrayList<>();
     private List<BlockState> possibleStates;
     private Random random;
     private int size = 0;
@@ -33,7 +36,7 @@ public class EarthTower {
                 for(int z = -radius; z < radius; z++) {
                     Location<World> newLocation = location.copy().add(x, y, z);
                     BlockState newState = possibleStates.get(random.nextInt(possibleStates.size()));
-                    oldStates.put(newLocation.getBlockPosition(), newLocation.getBlock());
+                    infos.add(new BlockInfo(newLocation.getBlock(), newState, newLocation.getBlockPosition()));
                     newLocation.setBlock(newState);
                     newLocation.getExtent().playSound(newState.getType().getSoundGroup().getPlaceSound(), newLocation.getPosition(), 1);
                     if(owner.getPosition().getFloorX() == newLocation.getBlockX() && owner.getPosition().getFloorY() == newLocation.getBlockY() && owner.getPosition().getFloorZ() == newLocation.getBlockZ()) {
@@ -46,12 +49,38 @@ public class EarthTower {
     }
 
     public void destroy() {
-        for(Map.Entry<Vector3i, BlockState> state : oldStates.entrySet()) {
-            new Location<>(location.getExtent(), state.getKey()).setBlock(state.getValue());
+        for(BlockInfo info : infos) {
+            Location<World> newLocation = new Location<>(location.getExtent(), info.getPosition());
+            if(newLocation.getBlock().equals(info.getNewState())) newLocation.setBlock(info.getOldState());
         }
     }
 
     public void setLocation(Location<World> location) {
         this.location = location;
+    }
+
+    public static class BlockInfo {
+
+        private BlockState oldState;
+        private BlockState newState;
+        private Vector3i position;
+
+        public BlockInfo(BlockState oldState, BlockState newState, Vector3i position) {
+            this.oldState = oldState;
+            this.newState = newState;
+            this.position = position;
+        }
+
+        public BlockState getOldState() {
+            return oldState;
+        }
+
+        public BlockState getNewState() {
+            return newState;
+        }
+
+        public Vector3i getPosition() {
+            return position;
+        }
     }
 }
